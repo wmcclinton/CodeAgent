@@ -38,6 +38,21 @@ class World:
 
         return
 
+    def render_state(self, state, team):
+        def get_color(unit, tile):
+            if unit == None or unit == "Unknown":
+                return self.color_map[tile]
+            else:
+                return self.color_map[unit][team-1]
+
+        rgb_world = np.array([[get_color(state[y][x]["unit"], state[y][x]["tile"]) for x in range(len(state))] for y in range(len(state))])
+        #print(rgb_world)
+        plt.title("World")
+        plt.imshow(rgb_world)
+        plt.show()
+
+        return
+
     def renderP3D(self):
         # Panda3D Rendering
         return

@@ -1,3 +1,13 @@
+### Defining Game Globals ###
+
+global resources
+resources = [100,100]
+
+global ledger
+ledger = [[],[]]
+
+### END ###
+
 ### Defining Game Units ###
 
 from codeagent_utils.unit_utils import *
@@ -42,6 +52,13 @@ class Nexus(Structure_Unit):
         super().__init__(name="Nexus", cost=None, attack=20, defense=70, attack_rng=2, sight_rng=4, team=team, is_main=True, earning=50)
         self.source = source
 
+    def interaction(self, unit):
+        global resources
+        if unit.name == "Miner" and unit.item == "ore":
+            unit.item = None
+            resources[unit.team] = resources[unit.team] + 10
+            print("Nexus Recieved Ore")
+
 ### END ###
 
 ### Defining Game Map ###
@@ -60,6 +77,12 @@ class LMontain_Tile(Tile):
 class Mineral_Tile(Tile):
     def __init__(self):
         super().__init__(name="Minerals", move_penalty=1, bonus=1, allowed_units=["All"], interaction=None)
+
+    def interaction(self, unit):
+        if unit.name == "Miner":
+            unit.item = "ore"
+            print("Miner Collected Ore")
+
 
 from P1_Nexus_CodeBase import *
 from P2_Nexus_CodeBase import *
@@ -97,9 +120,10 @@ class Game_1_World(World):
             "Dirt": [100, 100, 100], \
             "Mountains": [125, 125, 125], \
             "Large Mountains": [150, 150, 150], \
-            "Minerals": [255, 255, 255] }
+            "Minerals": [255, 255, 255], \
+            "Unknown": [75, 75, 75], }
 
-        #color_map = {"Invader": [[255,102,102],[102,102,255]], "ReconBot": [[255,178,102],[102,178,255]], "Miner": [[255,255,102],[102,255,255]], "RangeBlaseter": [[178,255,102],[102,255,178]], "Constructor": [[51,102,0],[0,102,51]], "Factory": [[102,102,0],[0,102,102]], "LazerCannon": [[102,51,0],[0,51,102]], "Nexus": [[102,0,0],[0,0,102]], "Dirt": [100, 100, 100], "Mountains": [125, 125, 125], "Large Mountains": [150, 150, 150]}
+        #color_map = {"Invader": [[255,102,102],[102,102,255]], "ReconBot": [[255,178,102],[102,178,255]], "Miner": [[255,255,102],[102,255,255]], "RangeBlaseter": [[178,255,102],[102,255,178]], "Constructor": [[51,102,0],[0,102,51]], "Factory": [[102,102,0],[0,102,102]], "LazerCannon": [[102,51,0],[0,51,102]], "Nexus": [[102,0,0],[0,0,102]], "Dirt": [100, 100, 100], "Mountains": [125, 125, 125], "Large Mountains": [150, 150, 150], "Unknown": [0, 0, 0]}
 
         super().__init__(width, height, base_tile, tile_comp, unit_comp, color_map)
         pass
@@ -107,6 +131,7 @@ class Game_1_World(World):
     def verify_script(self,path):
         # TODO finish this verification <<<
         return
+
 
 ### END ###
 
@@ -119,6 +144,33 @@ from codeagent_utils.game_utils import *
 class Game_1(Game):
     def __init__(self):
         world = Game_1_World()
+
+        self.alternator = {"Invader": Invader, \
+                        "ReconBot": ReconBot, \
+                        "Miner": Miner, \
+                        "RangeBlaster": RangeBlaster, \
+                        "Constructor": Constructor, \
+                        "Factory": Factory, \
+                        "LazerCannon": LazerCannon, \
+                        "Nexus": Nexus}
+
+        self.generators = [{"Invader": P1_Invader, \
+                        "ReconBot": P1_ReconBot, \
+                        "Miner": P1_Miner, \
+                        "RangeBlaster": P1_RangeBlaster, \
+                        "Constructor": P1_Constructor, \
+                        "Factory": P1_Factory, \
+                        "LazerCannon": P1_LazerCannon, \
+                        "Nexus": P1_Nexus}, \
+                        {"Invader": P2_Invader, \
+                        "ReconBot": P2_ReconBot, \
+                        "Miner": P2_Miner, \
+                        "RangeBlaster": P2_RangeBlaster, \
+                        "Constructor": P2_Constructor, \
+                        "Factory": P2_Factory, \
+                        "LazerCannon": P2_LazerCannon, \
+                        "Nexus": P2_Nexus}]
+
         super().__init__(world)
         pass
 
@@ -136,6 +188,25 @@ class Game_1(Game):
                 team_turn = 2
             else:
                 team_turn = 1
+
+    def get_resources(self,team):
+        global resources
+        return resources[team]
+
+    def set_resources(self,team,amount):
+        global resources
+        resources[team] = amount
+
+    def add_ledger(self,team,message):
+        global ledger
+        ledger[team].append(message)
+    
+    def get_ledger(self,team):
+        global ledger
+        return ledger[team]
+
+    def producer(self,unit_name,team):
+        return self.alternator[unit_name](team, self.generators[team][unit_name]())
 
 ### END ###
 

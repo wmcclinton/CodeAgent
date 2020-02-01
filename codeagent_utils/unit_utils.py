@@ -29,6 +29,7 @@ class Ground_Unit(Unit):
         self.critical_pos = None
         self.type_effect = None
         self.item = None
+        self.interaction = None
         self.allowed_actions = ["Move","Reinforce","Interact","Communicate","Attack"]
     
     def display(self):
