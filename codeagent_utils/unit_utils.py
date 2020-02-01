@@ -9,6 +9,8 @@ class Unit:
         self.attack_rng = attack_rng
         self.sight_rng = sight_rng
 
+        self.has_moved = False
+
     def showUnitAttributes(self):
         print("Name:",self.name)
         print("Team:",self.team)
@@ -27,6 +29,7 @@ class Ground_Unit(Unit):
         self.critical_pos = None
         self.type_effect = None
         self.item = None
+        self.allowed_actions = ["Move","Reinforce","Interact","Communicate","Attack"]
     
     def display(self):
         self.showUnitAttributes()
@@ -44,6 +47,7 @@ class Structure_Unit(Unit):
         self.tile_restriction = tile_restriction
         self.producible_units = producible_units
         self.interaction = interaction
+        self.allowed_actions = ["Produce","Communicate","Attack"]
 
     def display(self):
         self.showUnitAttributes()

@@ -19,7 +19,7 @@ def random_movement(move_rng, attack_rng):
 
 ### End ###
 
-class P1_Invader:
+class P2_Invader:
     def __init__(self):
         ### Edit Code Below Line ###
         
@@ -44,7 +44,7 @@ class P1_Invader:
         ### End ###
         return (action, direction, option)
 
-class P1_ReconBot:
+class P2_ReconBot:
     def __init__(self):
         ### Edit Code Below Line ###
         
@@ -69,7 +69,7 @@ class P1_ReconBot:
         ### End ###
         return (action, direction, option)
 
-class P1_Miner:
+class P2_Miner:
     def __init__(self):
         ### Edit Code Below Line ###
         
@@ -94,7 +94,7 @@ class P1_Miner:
         ### End ###
         return (action, direction, option)
 
-class P1_RangeBlaster:
+class P2_RangeBlaster:
     def __init__(self):
         ### Edit Code Below Line ###
         
@@ -119,7 +119,7 @@ class P1_RangeBlaster:
         ### End ###
         return (action, direction, option)
 
-class P1_Constructor:
+class P2_Constructor:
     def __init__(self):
         ### Edit Code Below Line ###
         
@@ -144,7 +144,7 @@ class P1_Constructor:
         ### End ###
         return (action, direction, option)
 
-class P1_Factory:
+class P2_Factory:
     def __init__(self):
         ### Edit Code Below Line ###
         
@@ -167,7 +167,7 @@ class P1_Factory:
         ### End ###
         return (action, direction, option)
 
-class P1_LazerCannon:
+class P2_LazerCannon:
     def __init__(self):
         ### Edit Code Below Line ###
         
@@ -190,7 +190,7 @@ class P1_LazerCannon:
         ### End ###
         return (action, direction, option)
 
-class P1_Nexus:
+class P2_Nexus:
     def __init__(self):
         ### Edit Code Below Line ###
         
@@ -218,8 +218,7 @@ class P1_Nexus:
 ### For testing purposes only ###
 ### Edit Code Below Line ###
 
-
-#unit_list = [P1_Invader(), P1_ReconBot(), P1_Miner(), P1_RangeBlaster(), P1_Constructor(), P1_Factory(), P1_LazerCannon(), P1_Nexus()]
+#unit_list = [P2_Invader(), P2_ReconBot(), P2_Miner(), P2_RangeBlaster(), P2_Constructor(), P2_Factory(), P2_LazerCannon(), P2_Nexus()]
 
 #for bot in unit_list:
     #print(type(bot))
