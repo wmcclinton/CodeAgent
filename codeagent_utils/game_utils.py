@@ -129,7 +129,6 @@ class Game:
                     location = (new_i, new_j)
                     moves_left = moves_left - self.world.layout[new_i][new_j]["tile"].move_penalty
 
-            self.world.render()
             if option == None:
                 return "Unit moved"
             else:

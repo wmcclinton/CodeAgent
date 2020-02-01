@@ -145,6 +145,9 @@ class Game_1(Game):
     def __init__(self):
         world = Game_1_World()
 
+        self.round_counter = 1
+        self.max_rounds = 3000
+
         self.alternator = {"Invader": Invader, \
                         "ReconBot": ReconBot, \
                         "Miner": Miner, \
@@ -175,38 +178,71 @@ class Game_1(Game):
         pass
 
     def finish_check(self):
-        return True
+        done = False
 
-    def start(self):
+        is_alive = [False, False]
+
+        for i, row in enumerate(self.world.layout):
+            for j, item in enumerate(row):
+                if item["unit"] != None:
+                    if item["unit"].name == "Nexus":
+                        if item["unit"].is_main == True:
+                            if item["unit"].current_hp > 0:
+                                is_alive[item["unit"].team - 1] = True
+
+        if is_alive[0] and is_alive[1]:
+            if self.round_counter > self.max_rounds:
+                print("Players Tied - Max Rounds")
+                return True
+            else:
+                return False
+        else:
+            if is_alive[0]:
+                print("Winner is Player 1")
+
+            if is_alive[1]:
+                print("Winner is Player 2")
+
+            return True
+
+    def start(self, verbose=True):
         done = False
         team_turn = 1
         while not done:
-            #self.world.render()
-            done = self.full_turn(team_turn)
+            self.world.render()
+            if verbose:
+                print()
+                print("%"*100)
+                print("Round {}/{}".format(self.round_counter, self.max_rounds))
+                print("%"*100)
+                print()
+            done = self.full_turn(team_turn, verbose=verbose)
 
             if team_turn == 1:
                 team_turn = 2
             else:
                 team_turn = 1
 
+            self.round_counter = self.round_counter + 1
+
     def get_resources(self,team):
         global resources
-        return resources[team]
+        return resources[team-1]
 
     def set_resources(self,team,amount):
         global resources
-        resources[team] = amount
+        resources[team-1] = amount
 
     def add_ledger(self,team,message):
         global ledger
-        ledger[team].append(message)
+        ledger[team-1].append(message)
     
     def get_ledger(self,team):
         global ledger
-        return ledger[team]
+        return ledger[team-1]
 
     def producer(self,unit_name,team):
-        return self.alternator[unit_name](team, self.generators[team][unit_name]())
+        return self.alternator[unit_name](team-1, self.generators[team-1][unit_name]())
 
 ### END ###
 
