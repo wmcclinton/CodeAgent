@@ -1,6 +1,6 @@
 ### Defining Game Units ###
 
-from unit_utils import *
+from codeagent_utils.unit_utils import *
 
 class Invader(Ground_Unit):
     def __init__(self, team):
@@ -38,7 +38,7 @@ class Nexus(Structure_Unit):
 
 ### Defining Game Map ###
 
-from world_utils import *
+from codeagent_utils.world_utils import *
 from random import randint
 
 class Montain_Tile(Tile):
@@ -93,7 +93,9 @@ class Game_1_World(World):
 
 ### Defining Game Mechanics ###
 
-from game_utils import *
+# TODO finish this and GAME class in game_utils.py <<<
+
+from codeagent_utils.game_utils import *
 
 class Game_1(Game):
     def __init__(self):
@@ -101,9 +103,10 @@ class Game_1(Game):
         super().__init__(world)
         pass
 
+    def turn(self):
+        return
+
 ### END ###
-
-
 
 
 unit_list = [Invader(1), ReconBot(1), Miner(1), RangeBlaster(1), Constructor(1), Factory(1), LazerCannon(1), Nexus(1)]
@@ -114,4 +117,4 @@ for bot in unit_list:
     print()
 
 game = Game_1()
-game.world.render()
+#game.world.render()
