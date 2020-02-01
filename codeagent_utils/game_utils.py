@@ -255,8 +255,6 @@ class Game:
                             return "Not Enough Resources to produce " + str(option) + " {}".format(str((aim_i,aim_j)))
                         else:
                             self.set_resources(unit.team, self.get_resources(unit.team) - cost)
-                            print(unit.team)
-                            print(unit)
                             return "Successfully Producd " + str(option) + " {}".format(str((aim_i,aim_j)))
                     except KeyError:
                         self.world.layout[aim_i][aim_j]["unit"] = None

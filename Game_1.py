@@ -49,7 +49,7 @@ class LazerCannon(Structure_Unit):
 
 class Nexus(Structure_Unit):
     def __init__(self, team, source):
-        super().__init__(name="Nexus", cost=None, attack=20, defense=70, attack_rng=2, sight_rng=4, team=team, is_main=True, earning=50)
+        super().__init__(name="Nexus", cost=None, attack=20, defense=70, attack_rng=2, sight_rng=4, team=team, is_main=True, earning=50, interaction=self.interaction)
         self.source = source
 
     def interaction(self, unit):
@@ -58,6 +58,8 @@ class Nexus(Structure_Unit):
             unit.item = None
             resources[unit.team] = resources[unit.team] + 10
             print("Nexus Recieved Ore")
+        elif unit.name == "Miner":
+            print("Miner had no Ore")
 
 ### END ###
 
@@ -76,7 +78,7 @@ class LMontain_Tile(Tile):
 
 class Mineral_Tile(Tile):
     def __init__(self):
-        super().__init__(name="Minerals", move_penalty=1, bonus=1, allowed_units=["All"], interaction=None)
+        super().__init__(name="Minerals", move_penalty=1, bonus=1, allowed_units=["All"], interaction=self.interaction)
 
     def interaction(self, unit):
         if unit.name == "Miner":
@@ -148,7 +150,7 @@ class Game_1(Game):
         world = Game_1_World()
 
         self.round_counter = 1
-        self.max_rounds = 3000
+        self.max_rounds = 10 #3000
 
         self.alternator = {"Invader": Invader, \
                         "ReconBot": ReconBot, \

@@ -31,6 +31,20 @@ def produce_recon_bot(state):
 
     return "Wait", None, None
 
+def random_miner(state):
+    my_i = int(len(state[0])/2)
+    my_j = int(len(state[0])/2)
+    if state[my_i - 1][my_j]["unit"] == "Nexus" or state[my_i - 1][my_j]["tile"] == "Minerals":
+        return "Interact", ["up"], None
+    elif state[my_i + 1][my_j]["unit"] == "Nexus" or state[my_i + 1][my_j]["tile"] == "Minerals":
+        return "Interact", ["down"], None
+    elif state[my_i][my_j - 1]["unit"] == "Nexus" or state[my_i][my_j - 1]["tile"] == "Minerals":
+        return "Interact", ["left"], None
+    elif state[my_i][my_j + 1]["unit"] == "Nexus" or state[my_i][my_j + 1]["tile"] == "Minerals":
+        return "Interact", ["right"], None
+
+    return "Wait", None, None
+
 ### End ###
 
 class P1_Invader:
@@ -105,7 +119,8 @@ class P1_Miner:
         move_rng = 3
         attack_rng = 0
 
-        action, direction, option = random_movement(move_rng, attack_rng)
+        #action, direction, option = random_movement(move_rng, attack_rng)
+        action, direction, option = random.choice([(random_movement(move_rng, attack_rng)), (random_miner(state))])
 
         self.last_state = state
 
