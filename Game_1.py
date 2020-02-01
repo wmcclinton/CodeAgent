@@ -246,14 +246,6 @@ class Game_1(Game):
 
 ### END ###
 
-
-#unit_list = [Invader(1), ReconBot(1), Miner(1), RangeBlaster(1), Constructor(1), Factory(1), LazerCannon(1), Nexus(1)]
-
-#for bot in unit_list:
-    #print(type(bot))
-    #bot.display()
-    #print()
-
 game = Game_1()
 game.start()
 

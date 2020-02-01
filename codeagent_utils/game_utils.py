@@ -107,6 +107,7 @@ class Game:
         direction = action_tuple[1]
         option = action_tuple[2]
         i, j = location
+        start_location = location
 
         if action_type not in unit.allowed_actions:
             return "\"" + str(action_type)  + "\" is an invalid Action Type"
@@ -130,7 +131,7 @@ class Game:
                     moves_left = moves_left - self.world.layout[new_i][new_j]["tile"].move_penalty
 
             if option == None:
-                return "Unit moved"
+                return "Unit moved from {} to {}".format(str(start_location),str(location))
             else:
                 action_type = option[0]
                 direction = option[1]
@@ -148,23 +149,33 @@ class Game:
                 # Check if dead then remove
                 if defense_unit.current_hp <= 0:
                     self.world.layout[aim_i][aim_j]["unit"] = None
-
-                    return "Attack Landed - Opposing Unit Died"
+                    
+                    if(unit.team != defense_unit.team):
+                        return "Attack {} Landed - Opposing {} Died".format(str((aim_i,aim_j)),defense_unit.name)
+                    else:
+                        return "Attack {} Landed - Your {} Died".format(str((aim_i,aim_j)),defense_unit.name)
                 else:
                     # Check if alive then counterattack
-                    counter_dmg = self.calc_attack(defense_unit, unit, (aim_i,aim_j))
+                    # Check if in range
+                    if abs(aim_i - i) + abs(aim_j - j) <= defense_unit.attack_rng:
+                        counter_dmg = self.calc_attack(defense_unit, unit, (aim_i,aim_j))
+                    else:
+                        counter_dmg = 0
 
                     # Update unit current_hp
                     unit.current_hp = unit.current_hp - counter_dmg
 
                     if unit.current_hp <= 0:
                         self.world.layout[i][j]["unit"] = None
-                        return "Attack Landed - Your Unit Died"
-
-                return "Attack Landed"
+                        return "Attack {} Landed - Your {} Died".format(str((aim_i,aim_j)),unit.name)
+                
+                if(unit.team != defense_unit.team):
+                    return "Attack {} Landed on Opposing {}".format(str((aim_i,aim_j)),defense_unit.name)
+                else:
+                    return "Attack {} Landed on Your {}".format(str((aim_i,aim_j)),defense_unit.name)
             else:
 
-                return "Attack Missed"
+                return "Attack {} Missed".format(str((aim_i,aim_j)))
 
         elif action_type == "Reinforce":
             aim_i, aim_j = self.get_aim_location(direction, location)
@@ -176,9 +187,9 @@ class Game:
                         reinforcing_unit.current_hp = reinforcing_unit.current_hp - (100 - unit.current_hp)
                         unit.current_hp = 100
                         self.set_resources(unit.team, self.get_resources(unit.team) - (100 - unit.current_hp)) # Must Define Get and Set Resources
-                        return "Successfully Reinforced"
+                        return "Successfully Reinforced {}".format(str((aim_i,aim_j)))
 
-            return "Reinforcement Failed"
+            return "Reinforcement {} Failed".format(str((aim_i,aim_j)))
 
         elif action_type == "Interact":
             aim_i, aim_j = self.get_aim_location(direction, location)
@@ -188,14 +199,14 @@ class Game:
             if interacting_unit != None:
                 if interacting_unit.interaction != None:
                     interacting_unit.interaction(unit)
-                    return "Successfully Interacted with Unit"
+                    return "Successfully Interacted with {} {}".format(interacting_unit.name,str((aim_i,aim_j)))
 
             if interacting_tile != None:
                 if interacting_tile.interaction != None:
                     interacting_tile.interaction(unit)
-                    return "Successfully Interacted with Tile"
+                    return "Successfully Interacted with {} {}".format(interacting_tile.name,str((aim_i,aim_j)))
 
-            return "Interaction Failed"
+            return "Interaction Failed {}".format(str((aim_i,aim_j)))
 
         elif action_type == "Communicate":
             if option == None:
@@ -206,7 +217,7 @@ class Game:
                 return "Failed to send Message Too Long"
             else:
                 self.add_ledger(unit.team,message)
-                return "Message Successfully Uploaded"
+                return "Message Successfully Uploaded: {}".format(message)
 
         elif action_type == "Produce":
             aim_i, aim_j = self.get_aim_location(direction, location)
@@ -222,6 +233,6 @@ class Game:
                         self.world.layout[aim_i][aim_j]["unit"] = self.producer(option, unit.team) # Define producer
                     except KeyError:
                         self.world.layout[aim_i][aim_j]["unit"] = None
-                        return "Failed to produce " + str(option)
+                        return "Failed to produce " + str(option) + " {}".format(str((aim_i,aim_j)))
 
         return "\"" + str(action_type)  + "\" was invalid"
