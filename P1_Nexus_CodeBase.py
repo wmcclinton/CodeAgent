@@ -18,7 +18,6 @@ def random_movement(move_rng, attack_rng):
 
     return action, direction, option
 
-
 ### End ###
 
 class P1_Invader:
@@ -56,7 +55,7 @@ class P1_ReconBot:
         ### End ###
         return
 
-    def Script(self):
+    def Script(self, state, ledger):
         ### Edit Code Below Line ###
 
         self.internal_ledger = ledger
@@ -81,7 +80,7 @@ class P1_Miner:
         ### End ###
         return
 
-    def Script(self):
+    def Script(self, state, ledger):
         ### Edit Code Below Line ###
 
         self.internal_ledger = ledger
@@ -106,7 +105,7 @@ class P1_RangeBlaster:
         ### End ###
         return
 
-    def Script(self):
+    def Script(self, state, ledger):
         ### Edit Code Below Line ###
 
         self.internal_ledger = ledger
@@ -131,7 +130,7 @@ class P1_Constructor:
         ### End ###
         return
 
-    def Script(self):
+    def Script(self, state, ledger):
         ### Edit Code Below Line ###
 
         self.internal_ledger = ledger
@@ -156,7 +155,7 @@ class P1_Factory:
         ### End ###
         return
 
-    def Script(self):
+    def Script(self, state, ledger):
         ### Edit Code Below Line ###
 
         self.internal_ledger = ledger
@@ -179,7 +178,7 @@ class P1_LazerCannon:
         ### End ###
         return
 
-    def Script(self):
+    def Script(self, state, ledger):
         ### Edit Code Below Line ###
 
         self.internal_ledger = ledger
@@ -202,7 +201,7 @@ class P1_Nexus:
         ### End ###
         return
 
-    def Script(self):
+    def Script(self, state, ledger):
         ### Edit Code Below Line ###
 
         self.internal_ledger = ledger
@@ -220,10 +219,14 @@ class P1_Nexus:
 ### For testing purposes only ###
 ### Edit Code Below Line ###
 
-p1i = P1_Invader()
+unit_list = [P1_Invader(), P1_ReconBot(), P1_Miner(), P1_RangeBlaster(), P1_Constructor(), P1_Factory(), P1_LazerCannon(), P1_Nexus()]
 
-state = None
-ledger = None
-print(p1i.Script(state, ledger))
+for bot in unit_list:
+    print(type(bot))
+    state = None
+    ledger = None
+    print(bot.Script(state, ledger))
+
+    print()
 
 ### End ###
