@@ -141,16 +141,20 @@ class Game:
                 # Check if unit in that location
                 new_i, new_j = self.get_new_location(d_step, location)
 
-                if self.world.layout[new_i][new_j]["unit"] != None or self.world.layout[new_i][new_j]["tile"].move_penalty == None or moves_left <= 0:
+                try:
+                    if self.world.layout[new_i][new_j]["unit"] != None or self.world.layout[new_i][new_j]["tile"].move_penalty == None or moves_left <= 0:
+                        break
+                    else:
+                        your_unit = self.world.layout[i][j]["unit"]
+                        self.world.layout[i][j]["unit"] = None
+                        self.world.layout[new_i][new_j]["unit"] = your_unit
+                        i = new_i
+                        j = new_j
+                        location = (new_i, new_j)
+                        moves_left = moves_left - self.world.layout[new_i][new_j]["tile"].move_penalty
+                except IndexError:
+                    print("Cannot Move There")
                     break
-                else:
-                    your_unit = self.world.layout[i][j]["unit"]
-                    self.world.layout[i][j]["unit"] = None
-                    self.world.layout[new_i][new_j]["unit"] = your_unit
-                    i = new_i
-                    j = new_j
-                    location = (new_i, new_j)
-                    moves_left = moves_left - self.world.layout[new_i][new_j]["tile"].move_penalty
 
             if option == None:
                 return "Unit moved from {} to {}".format(str(start_location),str(location))
@@ -161,7 +165,11 @@ class Game:
 
         if action_type == "Attack":
             aim_i, aim_j = self.get_aim_location(direction, location)
-            defense_unit = self.world.layout[aim_i][aim_j]["unit"]
+            try:
+                defense_unit = self.world.layout[aim_i][aim_j]["unit"]
+            except IndexError:
+                    print("Cannot Attack There")
+                    defense_unit = None
 
             if defense_unit!= None:
                 dmg = self.calc_attack(unit, defense_unit, location)
@@ -203,7 +211,12 @@ class Game:
             if len(direction) != 1:
                 return "Reinforce Failed"
             aim_i, aim_j = self.get_aim_location(direction, location)
-            reinforcing_unit = self.world.layout[aim_i][aim_j]["unit"]
+            try:
+                reinforcing_unit = self.world.layout[aim_i][aim_j]["unit"]
+            except IndexError:
+                    print("Cannot Reinforce There")
+                    reinforcing_unit = None
+
 
             if reinforcing_unit != None:
                 if reinforcing_unit.team == unit.team:
@@ -219,8 +232,12 @@ class Game:
             if len(direction) != 1:
                 return "Interact Failed"
             aim_i, aim_j = self.get_aim_location(direction, location)
-            interacting_unit = self.world.layout[aim_i][aim_j]["unit"]
-            interacting_tile = self.world.layout[aim_i][aim_j]["tile"]
+            try:
+                interacting_unit = self.world.layout[aim_i][aim_j]["unit"]
+                interacting_tile = self.world.layout[aim_i][aim_j]["tile"]
+            except IndexError:
+                interacting_unit = None
+                interacting_tile = None
 
             if interacting_unit != None:
                 if interacting_unit.interaction != None:
@@ -238,8 +255,13 @@ class Game:
             if len(direction) != 1:
                 return "Production Failed"
             aim_i, aim_j = self.get_aim_location(direction, location)
-            produce_unit = self.world.layout[aim_i][aim_j]["unit"]
-            produce_tile = self.world.layout[aim_i][aim_j]["tile"]
+            
+            try:
+                produce_unit = self.world.layout[aim_i][aim_j]["unit"]
+                produce_tile = self.world.layout[aim_i][aim_j]["tile"]
+            except IndexError:
+                produce_unit = None
+                produce_tile = None
 
             if produce_unit == None:
                 if produce_tile.move_penalty != None and ("All" in produce_tile.allowed_units or unit.name in produce_tile.allowed_units):

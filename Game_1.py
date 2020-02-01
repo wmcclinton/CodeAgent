@@ -135,6 +135,23 @@ class Game_1_World(World):
         # TODO finish this verification <<<
         return
 
+    def render(self):
+        global resources
+        
+        def get_color(unit, tile):
+            if unit == None:
+                return self.color_map[tile.name]
+            else:
+                return self.color_map[unit.name][unit.team-1]
+
+        rgb_world = np.array([[get_color(self.layout[y][x]["unit"], self.layout[y][x]["tile"]) for x in range(self.width)] for y in range(self.height)])
+        #print(rgb_world)
+        plt.title("[Resources] => Team {}: {} | Team {}: {}".format(1,resources[0],2,resources[1]))
+        plt.imshow(rgb_world)
+        plt.draw()
+        plt.pause(0.0001)
+        plt.clf()
+
 
 ### END ###
 
@@ -150,7 +167,7 @@ class Game_1(Game):
         world = Game_1_World()
 
         self.round_counter = 1
-        self.max_rounds = 10 #3000
+        self.max_rounds = 3000 #3000
 
         self.alternator = {"Invader": Invader, \
                         "ReconBot": ReconBot, \
