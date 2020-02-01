@@ -1,7 +1,7 @@
 ### Defining Game Globals ###
 
 global resources
-resources = [100,100]
+resources = [500,500]
 
 global ledger
 ledger = [[],[]]
@@ -121,9 +121,10 @@ class Game_1_World(World):
             "Mountains": [125, 125, 125], \
             "Large Mountains": [150, 150, 150], \
             "Minerals": [255, 255, 255], \
-            "Unknown": [75, 75, 75], }
+            "Unknown": [75, 75, 75], \
+            "EOW": [0, 0, 0]}
 
-        #color_map = {"Invader": [[255,102,102],[102,102,255]], "ReconBot": [[255,178,102],[102,178,255]], "Miner": [[255,255,102],[102,255,255]], "RangeBlaseter": [[178,255,102],[102,255,178]], "Constructor": [[51,102,0],[0,102,51]], "Factory": [[102,102,0],[0,102,102]], "LazerCannon": [[102,51,0],[0,51,102]], "Nexus": [[102,0,0],[0,0,102]], "Dirt": [100, 100, 100], "Mountains": [125, 125, 125], "Large Mountains": [150, 150, 150], "Unknown": [0, 0, 0]}
+        #color_map = {"Invader": [[255,102,102],[102,102,255]], "ReconBot": [[255,178,102],[102,178,255]], "Miner": [[255,255,102],[102,255,255]], "RangeBlaseter": [[178,255,102],[102,255,178]], "Constructor": [[51,102,0],[0,102,51]], "Factory": [[102,102,0],[0,102,102]], "LazerCannon": [[102,51,0],[0,51,102]], "Nexus": [[102,0,0],[0,0,102]], "Dirt": [100, 100, 100], "Mountains": [125, 125, 125], "Large Mountains": [150, 150, 150], "Unknown": [75, 75, 75], "EOW": [0, 0, 0]}
 
         super().__init__(width, height, base_tile, tile_comp, unit_comp, color_map)
         pass
@@ -140,6 +141,7 @@ class Game_1_World(World):
 # TODO finish this and GAME class in game_utils.py <<<
 
 from codeagent_utils.game_utils import *
+from copy import deepcopy
 
 class Game_1(Game):
     def __init__(self):
@@ -242,7 +244,7 @@ class Game_1(Game):
         return ledger[team-1]
 
     def producer(self,unit_name,team):
-        return self.alternator[unit_name](team-1, self.generators[team-1][unit_name]())
+        return deepcopy(self.alternator[unit_name](team, self.generators[team-1][unit_name]()))
 
 ### END ###
 

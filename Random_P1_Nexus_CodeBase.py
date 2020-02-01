@@ -17,20 +17,6 @@ def random_movement(move_rng, attack_rng):
 
     return action, direction, option
 
-def produce_recon_bot(state):
-    my_i = int(len(state[0])/2)
-    my_j = int(len(state[0])/2)
-    if state[my_i - 1][my_j]["unit"] == None:
-        return "Produce", ["up"], "ReconBot"
-    elif state[my_i + 1][my_j]["unit"] == None:
-        return "Produce", ["down"], "ReconBot"
-    elif state[my_i][my_j - 1]["unit"] == None:
-        return "Produce", ["left"], "ReconBot"
-    elif state[my_i][my_j + 1]["unit"] == None:
-        return "Produce", ["right"], "ReconBot"
-
-    return "Wait", None, None
-
 ### End ###
 
 class P1_Invader:
@@ -234,8 +220,7 @@ class P1_Nexus:
         self.internal_ledger = ledger
 
         attack_rng = 2
-        #action, direction, option = random_attack(attack_rng)
-        action, direction, option = produce_recon_bot(state)
+        action, direction, option = random_attack(attack_rng)
 
         self.last_state = state
 

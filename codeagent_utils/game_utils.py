@@ -50,19 +50,24 @@ class Game:
             for j in range(2*unit.sight_rng + 1):
                 actual_i = location[0] -  unit.sight_rng + i
                 actual_j = location[1] -  unit.sight_rng + j
-                if abs(actual_i - location[0]) + abs(actual_j - location[1]) <= unit.sight_rng:
-                    if self.world.layout[actual_i][actual_j]["unit"] == None:
-                        state[i][j]["unit"] = None
-                        state[i][j]["unit_current_hp"] = None
-                    else:
-                        state[i][j]["unit"] = self.world.layout[actual_i][actual_j]["unit"].name
-                        state[i][j]["unit_current_hp"] = self.world.layout[actual_i][actual_j]["unit"].current_hp
+                try:
+                    if abs(actual_i - location[0]) + abs(actual_j - location[1]) <= unit.sight_rng:
+                        if self.world.layout[actual_i][actual_j]["unit"] == None:
+                            state[i][j]["unit"] = None
+                            state[i][j]["unit_current_hp"] = None
+                        else:
+                            state[i][j]["unit"] = self.world.layout[actual_i][actual_j]["unit"].name
+                            state[i][j]["unit_current_hp"] = self.world.layout[actual_i][actual_j]["unit"].current_hp
 
-                    state[i][j]["tile"] = self.world.layout[actual_i][actual_j]["tile"].name
-                else:
-                    state[i][j]["unit"] = "Unknown"
-                    state[i][j]["unit_current_hp"] = "Unknown"
-                    state[i][j]["tile"] = "Unknown"
+                        state[i][j]["tile"] = self.world.layout[actual_i][actual_j]["tile"].name
+                    else:
+                        state[i][j]["unit"] = "Unknown"
+                        state[i][j]["unit_current_hp"] = "Unknown"
+                        state[i][j]["tile"] = "Unknown"
+                except IndexError:
+                    state[i][j]["unit"] = "EOW"
+                    state[i][j]["unit_current_hp"] = "EOW"
+                    state[i][j]["tile"] = "EOW"
 
         return state
 
@@ -90,24 +95,41 @@ class Game:
                             ledger = self.get_ledger(team)
                             #print(ledger)
                             name = item["unit"].name
-                            action_tuple = item["unit"].source.code(state, ledger)
+                            action_tuple, message = item["unit"].source.code(state, ledger)
                             item["unit"].has_moved = True
 
                             if verbose:
                                 print("({},{}) [Team {}]".format(i,j,team),name,"=>",action_tuple)
-                                print(self.turn(item["unit"], action_tuple, (i,j)))
+                                print(self.turn(item["unit"], action_tuple, (i,j), message))
                                 print("-"*100)
                         
         done = self.finish_check() # Must be defined in Game.py
         return done
 
-    def turn(self, unit, action_tuple, location):
+    def turn(self, unit, action_tuple, location, message, verbose=True):
         #print(unit,action_tuple,location)
         action_type = action_tuple[0]
         direction = action_tuple[1]
         option = action_tuple[2]
         i, j = location
         start_location = location
+
+        # Communicate
+
+        if message == None:
+            if verbose:
+                print("<Message Log> Failed to send Message")
+        else:
+            message = str(message)
+            if len(message) > 25:
+                if verbose:
+                    print("<Message Log> Failed to send Message Too Long")
+            else:
+                self.add_ledger(unit.team,message)
+                if verbose:
+                    print("<Message Log> Successfully Uploaded: {}".format(message))
+
+        # Action
 
         if action_type not in unit.allowed_actions:
             return "\"" + str(action_type)  + "\" is an invalid Action Type"
@@ -178,6 +200,8 @@ class Game:
                 return "Attack {} Missed".format(str((aim_i,aim_j)))
 
         elif action_type == "Reinforce":
+            if len(direction) != 1:
+                return "Reinforce Failed"
             aim_i, aim_j = self.get_aim_location(direction, location)
             reinforcing_unit = self.world.layout[aim_i][aim_j]["unit"]
 
@@ -192,6 +216,8 @@ class Game:
             return "Reinforcement {} Failed".format(str((aim_i,aim_j)))
 
         elif action_type == "Interact":
+            if len(direction) != 1:
+                return "Interact Failed"
             aim_i, aim_j = self.get_aim_location(direction, location)
             interacting_unit = self.world.layout[aim_i][aim_j]["unit"]
             interacting_tile = self.world.layout[aim_i][aim_j]["tile"]
@@ -208,18 +234,9 @@ class Game:
 
             return "Interaction Failed {}".format(str((aim_i,aim_j)))
 
-        elif action_type == "Communicate":
-            if option == None:
-                return "Failed to send Message"
-
-            message = str(option)
-            if len(message) > 25:
-                return "Failed to send Message Too Long"
-            else:
-                self.add_ledger(unit.team,message)
-                return "Message Successfully Uploaded: {}".format(message)
-
         elif action_type == "Produce":
+            if len(direction) != 1:
+                return "Production Failed"
             aim_i, aim_j = self.get_aim_location(direction, location)
             produce_unit = self.world.layout[aim_i][aim_j]["unit"]
             produce_tile = self.world.layout[aim_i][aim_j]["tile"]
@@ -231,6 +248,16 @@ class Game:
 
                     try:
                         self.world.layout[aim_i][aim_j]["unit"] = self.producer(option, unit.team) # Define producer
+                        cost = self.world.layout[aim_i][aim_j]["unit"].cost
+
+                        if self.get_resources(unit.team) < cost:
+                            self.world.layout[aim_i][aim_j]["unit"] = None
+                            return "Not Enough Resources to produce " + str(option) + " {}".format(str((aim_i,aim_j)))
+                        else:
+                            self.set_resources(unit.team, self.get_resources(unit.team) - cost)
+                            print(unit.team)
+                            print(unit)
+                            return "Successfully Producd " + str(option) + " {}".format(str((aim_i,aim_j)))
                     except KeyError:
                         self.world.layout[aim_i][aim_j]["unit"] = None
                         return "Failed to produce " + str(option) + " {}".format(str((aim_i,aim_j)))

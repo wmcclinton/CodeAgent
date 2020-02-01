@@ -41,8 +41,10 @@ class P2_Invader:
 
         self.last_state = state
 
+        message = "Hello World"
+
         ### End ###
-        return (action, direction, option)
+        return (action, direction, option), message
 
 class P2_ReconBot:
     def __init__(self):
@@ -66,8 +68,10 @@ class P2_ReconBot:
 
         self.last_state = state
 
+        message = "Hello World"
+
         ### End ###
-        return (action, direction, option)
+        return (action, direction, option), message
 
 class P2_Miner:
     def __init__(self):
@@ -91,8 +95,10 @@ class P2_Miner:
 
         self.last_state = state
 
+        message = "Hello World"
+
         ### End ###
-        return (action, direction, option)
+        return (action, direction, option), message
 
 class P2_RangeBlaster:
     def __init__(self):
@@ -116,8 +122,10 @@ class P2_RangeBlaster:
 
         self.last_state = state
 
+        message = "Hello World"
+
         ### End ###
-        return (action, direction, option)
+        return (action, direction, option), message
 
 class P2_Constructor:
     def __init__(self):
@@ -141,8 +149,10 @@ class P2_Constructor:
 
         self.last_state = state
 
+        message = "Hello World"
+
         ### End ###
-        return (action, direction, option)
+        return (action, direction, option), message
 
 class P2_Factory:
     def __init__(self):
@@ -164,8 +174,10 @@ class P2_Factory:
 
         self.last_state = state
 
+        message = "Hello World"
+
         ### End ###
-        return (action, direction, option)
+        return (action, direction, option), message
 
 class P2_LazerCannon:
     def __init__(self):
@@ -187,8 +199,10 @@ class P2_LazerCannon:
         
         self.last_state = state
 
+        message = "Hello World"
+
         ### End ###
-        return (action, direction, option)
+        return (action, direction, option), message
 
 class P2_Nexus:
     def __init__(self):
@@ -210,8 +224,10 @@ class P2_Nexus:
 
         self.last_state = state
 
+        message = "Hello World"
+
         ### End ###
-        return (action, direction, option)
+        return (action, direction, option), message
 
 ### WARNING ###
 ### Code won't be used in game ###

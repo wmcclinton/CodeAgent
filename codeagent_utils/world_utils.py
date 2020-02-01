@@ -12,10 +12,13 @@ class Tile():
 
 class World:
     def __init__(self, width, height, base_tile, tile_comp, unit_comp, color_map=None):
+        self.__delay_time__ = 0.001
+
         self.width = width
         self.height = height
         self.color_map = color_map
         self.layout = [[{"tile": base_tile, "unit": None} for _ in range(width)] for _ in range(height)]
+        plt.ion()
 
         for tile_tuple in tile_comp:
             self.layout[tile_tuple[0]][tile_tuple[1]]["tile"] = tile_tuple[2]
@@ -34,7 +37,9 @@ class World:
         #print(rgb_world)
         plt.title("World")
         plt.imshow(rgb_world)
-        plt.show()
+        plt.draw()
+        plt.pause(0.0001)
+        plt.clf()
 
         return
 
@@ -49,7 +54,9 @@ class World:
         #print(rgb_world)
         plt.title("World")
         plt.imshow(rgb_world)
-        plt.show()
+        plt.draw()
+        plt.pause(self.__delay_time__)
+        plt.clf()
 
         return
 
