@@ -145,6 +145,9 @@ class Game_1_World(World):
 
     def verify_script(self,path):
         # TODO finish this verification <<<
+
+        # TODO make requirements.txt <<<
+
         return
 
     def render(self):
