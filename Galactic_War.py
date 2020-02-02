@@ -6,6 +6,12 @@ resources = [500,500]
 global ledger
 ledger = [[],[]]
 
+global round_num
+round_num = 1
+
+global round_max
+round_max = 3000
+
 ### END ###
 
 ### Defining Game Units ###
@@ -143,6 +149,8 @@ class Game_1_World(World):
 
     def render(self):
         global resources
+        global round_num
+        global round_max
         
         def get_color(unit, tile):
             if unit == None:
@@ -152,7 +160,7 @@ class Game_1_World(World):
 
         rgb_world = np.array([[get_color(self.layout[y][x]["unit"], self.layout[y][x]["tile"]) for x in range(self.width)] for y in range(self.height)])
         #print(rgb_world)
-        plt.title("[Resources] => Team {}: {} | Team {}: {}".format(1,resources[0],2,resources[1]))
+        plt.title("[Roung {}/{}][Resources] => Team {}: {} | Team {}: {}".format(round_num,round_max,1,resources[0],2,resources[1]))
         plt.imshow(rgb_world)
         plt.draw()
         plt.pause(0.0001)
@@ -170,10 +178,13 @@ from copy import deepcopy
 
 class Game_1(Game):
     def __init__(self):
+        global round_num
+        global round_max
+
         world = Game_1_World()
 
-        self.round_counter = 1
-        self.max_rounds = 3000 #3000
+        self.round_counter = round_num
+        self.max_rounds = round_max #3000
 
         self.alternator = {"Invader": Invader, \
                         "ReconBot": ReconBot, \
@@ -218,7 +229,7 @@ class Game_1(Game):
                                 is_alive[item["unit"].team - 1] = True
 
         if is_alive[0] and is_alive[1]:
-            if self.round_counter > self.max_rounds:
+            if self.round_counter >= self.max_rounds:
                 print("Players Tied - Max Rounds")
                 return True
             else:
@@ -233,6 +244,8 @@ class Game_1(Game):
             return True
 
     def start(self, verbose=True):
+        global round_num
+
         done = False
         team_turn = 1
         while not done:
@@ -251,6 +264,7 @@ class Game_1(Game):
                 team_turn = 1
 
             self.round_counter = self.round_counter + 1
+            round_num = self.round_counter
 
     def get_resources(self,team):
         global resources
