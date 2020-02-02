@@ -104,7 +104,7 @@ class P1_ReconBot:
 class P1_Miner:
     def __init__(self):
         ### Edit Code Below Line ###
-        
+
         self.internal_ledger = None
         self.last_state = None
 
@@ -113,6 +113,8 @@ class P1_Miner:
 
     def code(self, state, ledger):
         ### Edit Code Below Line ###
+
+        print(state)
 
         self.internal_ledger = ledger
 
