@@ -56,10 +56,12 @@ class Game:
                             state[i][j]["unit"] = None
                             state[i][j]["unit_current_hp"] = None
                             state[i][j]["unit_team"] = None
+                            state[i][j]["location"] = (actual_i,actual_j)
                         else:
                             state[i][j]["unit"] = self.world.layout[actual_i][actual_j]["unit"].name
                             state[i][j]["unit_current_hp"] = self.world.layout[actual_i][actual_j]["unit"].current_hp
                             state[i][j]["unit_team"] = self.world.layout[actual_i][actual_j]["unit"].team
+                            state[i][j]["location"] = (actual_i,actual_j)
 
                         state[i][j]["tile"] = self.world.layout[actual_i][actual_j]["tile"].name
                     else:
@@ -67,11 +69,13 @@ class Game:
                         state[i][j]["unit_current_hp"] = "Unknown"
                         state[i][j]["tile"] = "Unknown"
                         state[i][j]["unit_team"] = "Unknown"
+                        state[i][j]["location"] = (actual_i,actual_j)
                 except IndexError:
                     state[i][j]["unit"] = "EOW"
                     state[i][j]["unit_current_hp"] = "EOW"
                     state[i][j]["tile"] = "EOW"
                     state[i][j]["unit_team"] = "EOW"
+                    state[i][j]["location"] = (actual_i,actual_j)
 
         return state
 

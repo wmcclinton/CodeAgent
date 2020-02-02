@@ -63,7 +63,7 @@ class Nexus(Structure_Unit):
         global resources
         if unit.name == "Miner" and unit.item == "ore":
             unit.item = None
-            resources[unit.team] = resources[unit.team] + 10
+            resources[unit.team - 1] = resources[unit.team - 1] + 10
             print("Nexus Recieved Ore")
         elif unit.name == "Miner":
             print("Miner had no Ore")
