@@ -160,7 +160,7 @@ class Game_1_World(World):
 
         rgb_world = np.array([[get_color(self.layout[y][x]["unit"], self.layout[y][x]["tile"]) for x in range(self.width)] for y in range(self.height)])
         #print(rgb_world)
-        plt.title("[Roung {}/{}][Resources] => Team {}: {} | Team {}: {}".format(round_num,round_max,1,resources[0],2,resources[1]))
+        plt.title("[Roung {}/{}][Resources => Team {}: {} | Team {}: {}]".format(round_num,round_max,1,resources[0],2,resources[1]))
         plt.imshow(rgb_world)
         plt.draw()
         plt.pause(0.0001)
