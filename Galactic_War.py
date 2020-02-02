@@ -98,16 +98,16 @@ class Mineral_Tile(Tile):
             print("Miner Collected Ore")
 
 
-from P1_Nexus_CodeBase import *
-from P2_Nexus_CodeBase import *
+from Galactic_War_Codebases.P1_Nexus_CodeBase import *
+from Galactic_War_Codebases.P2_Nexus_CodeBase import *
 
 class Game_1_World(World):
     def __init__(self):
         width = 100
         height = 100
         base_tile = Tile()
-        P1NC = "P1_Nexus_CodeBase.py"
-        P2NC = "P2_Nexus_CodeBase.py"
+        P1NC = "Galactic_War_Codebases/P1_Nexus_CodeBase.py"
+        P2NC = "Galactic_War_Codebases/P2_Nexus_CodeBase.py"
 
         self.verify_script(P1NC)
         self.verify_script(P2NC)
