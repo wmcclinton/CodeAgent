@@ -66,7 +66,7 @@ class Game:
                         state[i][j]["unit"] = "Unknown"
                         state[i][j]["unit_current_hp"] = "Unknown"
                         state[i][j]["tile"] = "Unknown"
-                        state[i][j]["unit_team"] = "EOW"
+                        state[i][j]["unit_team"] = "Unknown"
                 except IndexError:
                     state[i][j]["unit"] = "EOW"
                     state[i][j]["unit_current_hp"] = "EOW"
