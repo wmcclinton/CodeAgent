@@ -264,22 +264,23 @@ class Game:
                 produce_tile = None
 
             if produce_unit == None:
-                if produce_tile.move_penalty != None and ("All" in produce_tile.allowed_units or unit.name in produce_tile.allowed_units):
-                    if option == None:
-                        return "Failed to Define Unit for Production"
+                if produce_tile.allowed_units != None:
+                    if produce_tile.move_penalty != None and ("All" in produce_tile.allowed_units or unit.name in produce_tile.allowed_units):
+                        if option == None:
+                            return "Failed to Define Unit for Production"
 
-                    try:
-                        self.world.layout[aim_i][aim_j]["unit"] = self.producer(option, unit.team) # Define producer
-                        cost = self.world.layout[aim_i][aim_j]["unit"].cost
+                        try:
+                            self.world.layout[aim_i][aim_j]["unit"] = self.producer(option, unit.team) # Define producer
+                            cost = self.world.layout[aim_i][aim_j]["unit"].cost
 
-                        if self.get_resources(unit.team) < cost:
+                            if self.get_resources(unit.team) < cost:
+                                self.world.layout[aim_i][aim_j]["unit"] = None
+                                return "Not Enough Resources to produce " + str(option) + " {}".format(str((aim_i,aim_j)))
+                            else:
+                                self.set_resources(unit.team, self.get_resources(unit.team) - cost)
+                                return "Successfully Producd " + str(option) + " {}".format(str((aim_i,aim_j)))
+                        except KeyError:
                             self.world.layout[aim_i][aim_j]["unit"] = None
-                            return "Not Enough Resources to produce " + str(option) + " {}".format(str((aim_i,aim_j)))
-                        else:
-                            self.set_resources(unit.team, self.get_resources(unit.team) - cost)
-                            return "Successfully Producd " + str(option) + " {}".format(str((aim_i,aim_j)))
-                    except KeyError:
-                        self.world.layout[aim_i][aim_j]["unit"] = None
-                        return "Failed to produce " + str(option) + " {}".format(str((aim_i,aim_j)))
+                            return "Failed to produce " + str(option) + " {}".format(str((aim_i,aim_j)))
 
         return "\"" + str(action_type)  + "\" was invalid"

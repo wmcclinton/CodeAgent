@@ -114,8 +114,6 @@ class P1_Miner:
     def code(self, state, ledger):
         ### Edit Code Below Line ###
 
-        print(state)
-
         self.internal_ledger = ledger
 
         move_rng = 3

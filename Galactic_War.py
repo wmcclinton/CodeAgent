@@ -46,6 +46,7 @@ class LazerCannon(Structure_Unit):
     def __init__(self, team, source):
         super().__init__(name="LazerCannon", cost=500, attack=60, defense=70, attack_rng=3, sight_rng=4, team=team, is_main=False, earning=0)
         self.source = source
+        self.allowed_actions = ["Communicate","Attack"]
 
 class Nexus(Structure_Unit):
     def __init__(self, team, source):
@@ -71,6 +72,11 @@ from random import randint
 class Montain_Tile(Tile):
     def __init__(self):
         super().__init__(name="Mountains", move_penalty=2, bonus=1, allowed_units=["All"], interaction=None)
+
+    def interaction(self, unit):
+        if unit.name == "Constructor":
+            unit = deepcopy(self.alternator["Factory"](unit.team, self.generators[unit.team-1]["Factory"]()))
+            print("Constuctor turned into factor")
 
 class LMontain_Tile(Tile):
     def __init__(self):
