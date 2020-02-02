@@ -13,7 +13,7 @@ global round_max
 round_max = 3000 #3000
 
 global render_time
-render_time = 0.5 #0.0001
+render_time = 0.01 #0.0001
 
 ### END ###
 
@@ -43,7 +43,7 @@ class RangeBlaster(Ground_Unit):
 
 class Constructor(Ground_Unit):
     def __init__(self, team, source):
-        super().__init__(name="Constructor", cost=350, attack=0, defense=30, attack_rng=0, sight_rng=4, move_rng=3, team=team)
+        super().__init__(name="Constructor", cost=300, attack=0, defense=30, attack_rng=0, sight_rng=4, move_rng=3, team=team)
         self.source = source
 
 class Factory(Structure_Unit):
@@ -53,7 +53,7 @@ class Factory(Structure_Unit):
 
 class LazerCannon(Structure_Unit):
     def __init__(self, team, source):
-        super().__init__(name="LazerCannon", cost=500, attack=60, defense=70, attack_rng=3, sight_rng=4, team=team, is_main=False, earning=0)
+        super().__init__(name="LazerCannon", cost=250, attack=75, defense=70, attack_rng=3, sight_rng=4, team=team, is_main=False, earning=0)
         self.source = source
         self.allowed_actions = ["Communicate","Attack"]
 
@@ -264,6 +264,9 @@ class Game_1(Game):
                 print("%"*100)
                 print()
             done = self.full_turn(team_turn, verbose=verbose)
+
+            # Second/Ending Render
+            self.world.render()
 
             if team_turn == 1:
                 team_turn = 2

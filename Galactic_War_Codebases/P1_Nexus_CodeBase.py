@@ -60,7 +60,7 @@ def random_miner(state,move_rng,attack_rng):
 
     return random_movement(move_rng,attack_rng)
 
-def lazer_cannon_destroy_enemy(state,attack_rng=3):
+def structure_destroy_enemy(state,attack_rng=3):
     my_i = int(len(state[0])/2)
     my_j = int(len(state[0])/2)
 
@@ -74,13 +74,13 @@ def lazer_cannon_destroy_enemy(state,attack_rng=3):
                     j_distance = item["location"][1] - state[my_i][my_j]["location"][1]
                     
                     for i_diff in range(abs(i_distance)):
-                        if i_distance > 0:
+                        if i_distance < 0:
                             directions.append("up")
                         else:
                             directions.append("down")
 
                     for j_diff in range(abs(j_distance)):
-                        if j_distance > 0:
+                        if j_distance < 0:
                             directions.append("left")
                         else:
                             directions.append("right")
@@ -88,6 +88,66 @@ def lazer_cannon_destroy_enemy(state,attack_rng=3):
                     return ("Attack", directions, None)
 
     return "Wait", None, None
+
+def miner_search(state, has_ore):
+    my_i = int(len(state[0])/2)
+    my_j = int(len(state[0])/2)
+
+    directions = []
+    option = None
+    while len(directions) < 4:
+        if not has_ore:
+            if state[my_i - 1][my_j]["tile"] == "Minerals":
+                option = ("Interact", ["up"], None)
+                break
+            elif state[my_i + 1][my_j]["tile"] == "Minerals":
+                option = ("Interact", ["down"], None)
+                break
+            elif state[my_i][my_j - 1]["tile"] == "Minerals":
+                option = ("Interact", ["left"], None)
+                break
+            elif state[my_i][my_j + 1]["tile"] == "Minerals":
+                option = ("Interact", ["right"], None)
+                break
+            elif state[my_i - 1][my_j]["unit"] == None and (state[my_i][my_j]["location"][0] - 1 > 9):
+                my_i = my_i - 1
+                directions.append("up")
+            elif state[my_i][my_j - 1]["unit"] == None and (state[my_i][my_j]["location"][1] - 1 > 9):
+                my_j = my_j - 1
+                directions.append("left")
+            elif state[my_i + 1][my_j]["unit"] == None:
+                directions.append(random.choice(["up","down","left","right"]))
+            elif state[my_i][my_j + 1]["unit"] == None:
+                directions.append(random.choice(["up","down","left","right"]))
+            else:
+                directions.append(random.choice(["up","down","left","right"]))
+        else:
+            if state[my_i - 1][my_j]["unit"] == "Nexus" and str(state[my_i - 1][my_j]["unit_team"]) == "1":
+                option = ("Interact", ["up"], None)
+                break
+            elif state[my_i + 1][my_j]["unit"] == "Nexus" and str(state[my_i + 1][my_j]["unit_team"]) == "1":
+                option = ("Interact", ["down"], None)
+                break
+            elif state[my_i][my_j - 1]["unit"] == "Nexus" and str(state[my_i][my_j - 1]["unit_team"]) == "1":
+                option = ("Interact", ["left"], None)
+                break
+            elif state[my_i][my_j + 1]["unit"] == "Nexus" and str(state[my_i][my_j + 1]["unit_team"]) == "1":
+                option = ("Interact", ["right"], None)
+                break
+            elif state[my_i + 1][my_j]["unit"] == None  and (state[my_i][my_j]["location"][0] + 1 < 19):
+                my_i = my_i + 1
+                directions.append("down")
+            elif state[my_i][my_j + 1]["unit"] == None and (state[my_i][my_j]["location"][1] + 1 < 19):
+                my_j = my_j + 1
+                directions.append("right")
+            elif state[my_i - 1][my_j]["unit"] == None:
+                directions.append(random.choice(["up","down","left","right"]))
+            elif state[my_i][my_j - 1]["unit"] == None:
+                directions.append(random.choice(["up","down","left","right"]))
+            else:
+                directions.append(random.choice(["up","down","left","right"]))
+
+    return "Move", directions, option
           
 
 ### End ###
@@ -153,6 +213,8 @@ class P1_Miner:
         self.internal_ledger = None
         self.last_state = None
 
+        self.has_ore = False
+
         ### End ###
         return
 
@@ -165,7 +227,14 @@ class P1_Miner:
         attack_rng = 0
 
         #action, direction, option = random_movement(move_rng, attack_rng)
-        action, direction, option = random.choice([(random_movement(move_rng, attack_rng)), (random_miner(state,move_rng,attack_rng))])
+        action, direction, option = miner_search(state,self.has_ore)
+
+        if option != None:
+            if option[0] == "Interact":
+                if self.has_ore == False:
+                    self.has_ore = True
+                else:
+                    self.has_ore = False
 
         self.last_state = state
 
@@ -270,7 +339,7 @@ class P1_LazerCannon:
 
         attack_rng = 3
         #action, direction, option = random_attack(attack_rng)
-        action, direction, option = lazer_cannon_destroy_enemy(state)
+        action, direction, option = structure_destroy_enemy(state)
         
         self.last_state = state
 
@@ -301,7 +370,7 @@ class P1_Nexus:
         if self.num_lazer_cannons < 3:
             action, direction, option = produce_lazer_cannon(state)
         else:
-            return "Wait", None, None
+            action, direction, option = structure_destroy_enemy(state,attack_rng=2)
 
         if option == "LazerCannon":
             self.num_lazer_cannons += 1
