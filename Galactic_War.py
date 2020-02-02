@@ -12,6 +12,9 @@ round_num = 1
 global round_max
 round_max = 3000 #3000
 
+global render_time
+render_time = 0.5 #0.0001
+
 ### END ###
 
 ### Defining Game Units ###
@@ -154,6 +157,7 @@ class Game_1_World(World):
         global resources
         global round_num
         global round_max
+        global render_time
         
         def get_color(unit, tile):
             if unit == None:
@@ -166,7 +170,7 @@ class Game_1_World(World):
         plt.title("[Round {}/{}][Resources => Team {}: {} | Team {}: {}]".format(round_num,round_max,1,resources[0],2,resources[1]))
         plt.imshow(rgb_world)
         plt.draw()
-        plt.pause(0.0001) #0.0001
+        plt.pause(render_time) #0.0001
         plt.clf()
 
 

@@ -31,6 +31,21 @@ def produce_recon_bot(state):
 
     return "Wait", None, None
 
+def produce_lazer_cannon(state):
+    my_i = int(len(state[0])/2)
+    my_j = int(len(state[0])/2)
+    if state[my_i][my_j + 1]["unit"] == None:
+        return "Produce", ["right"], "LazerCannon"
+    elif state[my_i - 1][my_j]["unit"] == None:
+        return "Produce", ["up"], "LazerCannon"
+    elif state[my_i + 1][my_j]["unit"] == None:
+        return "Produce", ["down"], "LazerCannon"
+    elif state[my_i][my_j - 1]["unit"] == None:
+        return "Produce", ["left"], "LazerCannon"
+
+    return "Wait", None, None
+
+
 def random_miner(state,move_rng,attack_rng):
     my_i = int(len(state[0])/2)
     my_j = int(len(state[0])/2)
@@ -44,6 +59,36 @@ def random_miner(state,move_rng,attack_rng):
         return "Interact", ["right"], None
 
     return random_movement(move_rng,attack_rng)
+
+def lazer_cannon_destroy_enemy(state,attack_rng=3):
+    my_i = int(len(state[0])/2)
+    my_j = int(len(state[0])/2)
+
+    directions = []
+
+    for i, row in enumerate(state):
+        for j, item in enumerate(row):
+            if item["unit"] != None and str(item["unit_team"]) == "2":
+                if (abs(item["location"][0] - state[my_i][my_j]["location"][0]) + abs(item["location"][1] - state[my_i][my_j]["location"][1])) <= attack_rng:
+                    i_distance = item["location"][0] - state[my_i][my_j]["location"][0]
+                    j_distance = item["location"][1] - state[my_i][my_j]["location"][1]
+                    
+                    for i_diff in range(abs(i_distance)):
+                        if i_distance > 0:
+                            directions.append("up")
+                        else:
+                            directions.append("down")
+
+                    for j_diff in range(abs(j_distance)):
+                        if j_distance > 0:
+                            directions.append("left")
+                        else:
+                            directions.append("right")
+
+                    return ("Attack", directions, None)
+
+    return "Wait", None, None
+          
 
 ### End ###
 
@@ -224,7 +269,8 @@ class P1_LazerCannon:
         self.internal_ledger = ledger
 
         attack_rng = 3
-        action, direction, option = random_attack(attack_rng)
+        #action, direction, option = random_attack(attack_rng)
+        action, direction, option = lazer_cannon_destroy_enemy(state)
         
         self.last_state = state
 
@@ -239,6 +285,7 @@ class P1_Nexus:
         
         self.internal_ledger = None
         self.last_state = None
+        self.num_lazer_cannons = 0
 
         ### End ###
         return
@@ -250,7 +297,14 @@ class P1_Nexus:
 
         attack_rng = 2
         #action, direction, option = random_attack(attack_rng)
-        action, direction, option = produce_recon_bot(state)
+
+        if self.num_lazer_cannons < 3:
+            action, direction, option = produce_lazer_cannon(state)
+        else:
+            return "Wait", None, None
+
+        if option == "LazerCannon":
+            self.num_lazer_cannons += 1
 
         self.last_state = state
 
