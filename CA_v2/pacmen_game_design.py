@@ -20,11 +20,11 @@ class Wall_Object(GameObject):
 # Agents
 
 class Pacman_Agent(GameObject):
-    def __init__(self, team, code, obj_type="pacman", loc=None, message="", color=[(0,255,0),(255,0,0)], specific_attributes={"power-up": 0, "sight": 3}, action_set=["up","down","left","right","stay"]):
+    def __init__(self, team, code, obj_type="pacman", loc=None, message="", color=[(0,255,0),(255,0,0)], specific_attributes={"power-up": 0, "sight": 5}, action_set=["up","down","left","right","stay"]):
         super().__init__(obj_type, loc, message, team, color, specific_attributes, action_set, code)
 
 class Ghost_Agent(GameObject):
-    def __init__(self, team, code, obj_type="ghost", loc=None, message="", color=[(0,55,0),(55,0,0)], specific_attributes={"sight": 3}, action_set=["up","down","left","right","stay"]):
+    def __init__(self, team, code, obj_type="ghost", loc=None, message="", color=[(0,55,0),(55,0,0)], specific_attributes={"sight": 5}, action_set=["up","down","left","right","stay"]):
         super().__init__(obj_type, loc, message, team, color, specific_attributes, action_set, code)
 
 
@@ -146,6 +146,7 @@ class Pacmen(Game):
                         #self.render_agent(obs)
 
                         #print(obs, message, memory)
+                        #input()
                         action, action_args, message = val["obj"].code(obs, message, memory)
 
                         # Step
@@ -180,7 +181,7 @@ class Pacmen(Game):
                                         if val["obj"].team == 1:
                                             self.p1_score += 1
                                         elif val["obj"].team == 2:
-                                            self.p2_score += 11
+                                            self.p2_score += 1
 
                                     self.current_frame[next_loc]["obj"] = this_obj
                                     self.current_frame[this_loc]["obj"] = None

@@ -5,7 +5,8 @@ class Code:
         self.source_code = {"Pacman_Agent": self.Pacman_Agent_Code, "Ghost_Agent": self.Ghost_Agent_Code}
 
     def Pacman_Agent_Code(self, obs, message, memory):
-        return random.choice(["up","down","left","right","stay"]), 0, "Hello world!"
+        action = input("Action: ")
+        return action, 0, "Hello world!"
 
     def Ghost_Agent_Code(self, obs, message, memory):
         return random.choice(["up","down","left","right","stay"]), 0, "Hello world!"
