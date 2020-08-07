@@ -147,7 +147,8 @@ class Pacmen(Game):
 
                         #print(obs, message, memory)
                         #input()
-                        action, action_args, message = val["obj"].code(obs, message, memory)
+                        info = str(val["obj"].obj_type) + str(val["obj"].team)
+                        action, action_args, message = val["obj"].code(obs, message, memory, info)
 
                         # Step
                         val["obj"].memory.append(message)
@@ -205,7 +206,7 @@ class Pacmen(Game):
                                 elif next_loc_info["obj"].obj_type == "ghost":
                                     pass
                             
-                                if this_obj_type == "pacman":
+                                if this_obj_type == "pacman" and this_obj.specific_attributes["power-up"] != 0:
                                     this_obj.specific_attributes["power-up"] -= 1
                         #print()
 
@@ -218,6 +219,9 @@ class Pacmen(Game):
 
         # Check if done
 
+        return self.current_frame
+
+    def done_check(self):
         print("P1 Score:", self.p1_score)
         print("P2 Score:", self.p2_score)
 
@@ -226,4 +230,4 @@ class Pacmen(Game):
         
         self.internal_timer += 1
 
-        return self.current_frame
+        return self.done

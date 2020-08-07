@@ -77,7 +77,10 @@ class Game():
                 self.render()
 
             self.step()
+            self.done_check()
 
-    # Need at step function defined
+    # Need a step function defined
+
+    # Need a done_check funtion
         
 
